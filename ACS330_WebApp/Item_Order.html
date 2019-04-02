@@ -3,19 +3,19 @@
 <head>
 	<title> Factory of the Future - Item Order</title>
 		<meta charset="utf-8">
-	<meta name="author" content=“Group2”> 
+	<meta name="author" content=“Group2”>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	
-	<script type="text/javascript" src="/home/group2/rosbridge_and_roslibjs/ACS330_WebApp/jquery-3.3.1.min.js"></script> <!-- change to online link when connected to internet! -->
-	<script type="text/javascript" src="/home/group2/rosbridge_and_roslibjs/ACS330_WebApp/roslib.min.js"></script>
-	<script type="text/javascript" src="/home/group2/rosbridge_and_roslibjs/ACS330_WebApp/eventemitter2.min.js"></script>
-	
+
+	<script type="text/javascript" src="jquery-3.3.1.min.js"></script> <!-- change to online link when connected to internet! -->
+	<script type="text/javascript" src="roslib.min.js"></script>
+	<script type="text/javascript" src="eventemitter2.min.js"></script>
+
 	<!-- when you've got internet
 	<script type="text/javascript" src="http://static.robotwebtools.org/EventEmitter2/current/eventemitter2.min.js"></script>
 	<script type="text/javascript" src="http://static.robotwebtools.org/roslibjs/current/roslib.min.js"></script>
 	-->
 	<script type="text/javascript" type="text/javascript">
-		
+
 	// Connecting to ROS
   	// -----------------
 
@@ -50,7 +50,7 @@
 		listener.unsubscribe();
 	  });
 	  */
-	
+
 	// Publishing a Topic
 	  // ------------------
 
@@ -60,25 +60,25 @@
 		messageType : 'std_msgs/String'
 	  });
 
-	
+
 	function submit() {
 		var values = [];
 		jQuery("input[type='radio']:checked").each(function(){
 			values.push(jQuery(this).next("a").text());
 			});
 		alert("You chose: " + values.join()); //let the user know what he/she ordered
-		
+
 		var thisOrder = new ROSLIB.Message({ //in order to publish
 			data: (values.join())
 	  	});
-	 
+
 	  	Order.publish(thisOrder); //the string of Item Porperties should published instead of twist
 	}
-		
+
 	function goBack() {
   		window.history.back();
 	}
-	  
+
 	</script>
 	<style>
 	.form__element {
@@ -132,7 +132,7 @@
 		padding: 0.3em;
 	}
 
-	.Log_Out_button { 
+	.Log_Out_button {
 		position: absolute;
 		left: 10px;
 		top: 10px;
@@ -145,7 +145,7 @@
 		text-decoration: none;
 	}
 
-	.Main_Menu_button { 
+	.Main_Menu_button {
 		position: absolute;
 		right: 10px;
 		top: 10px;
@@ -158,7 +158,7 @@
 		text-decoration: none;
 	}
 
-	.Back_button { 
+	.Back_button {
 		position: absolute;
 		left: 10px;
 		bottom: 10px;
@@ -200,13 +200,13 @@
 			width: 100%;
 		}
 	}
-	</style>     
+	</style>
 </head>
 
 <body>
-	<a href="file:///home/group2/rosbridge_and_roslibjs/ACS330_WebApp/Main_Menu.htm" 
+	<a href="Main_Menu.htm"
 	class="Main_Menu_button">Main Menu</a>
-	<a href="file:///home/group2/rosbridge_and_roslibjs/ACS330_WebApp/Log_In.htm" 
+	<a href="Log_In.htm"
 	class="Log_Out_button">LogOut</a>
 	<br /><br />
 	<h1 class="top_middlers">Item Order</h1>
@@ -218,7 +218,7 @@
 			<input type="radio" name="Position"> <a class="ref">2</a><br />
 			<input type="radio" name="Position"> <a class="ref">3</a><br />
 			<input type="radio" name="Position"> <a class="ref">4</a><br />
-			
+
 		</div>
 		<div class="column";>
 			<h2>Shape</h2>
@@ -226,21 +226,20 @@
 			<input type="radio" name="Shape"> <a class="ref">Square</a><br />
 			<input type="radio" name="Shape"> <a class="ref">Triangle</a><br />
 			<input type="radio" name="Shape"> <a class="ref">Diamond</a><br />
-			
+
 		</div>
 		<div class="column";>
 			<h2>Colour</h2>
 			<input type="radio" name="Colour"> <a class="ref">Black</a><br />
 			<input type="radio" name="Colour"> <a class="ref">Red</a><br />
-		</div>		
+		</div>
 	</div>
 	<br />
 	<input type="button" onclick=submit(); value="Order Item" class="form_button" />
 	<br /><br /><br />
 	</fieldset>
-	
+
 	<button onclick=goBack(); type=“button” class="Back_button">Back</button>
 
 </body>
 </html>
-
