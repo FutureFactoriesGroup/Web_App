@@ -1,0 +1,95 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Factory of the Future - Main Menu</title>
+    <meta charset="utf-8">
+    <meta name="author" content=“Group2”>
+
+    <style>
+.form__element {
+    margin: 0 0 1em 0;
+}
+
+.form__label {
+    font-size: 1.2em;
+    display: block;
+    margin: 0 0 0.4em 0;
+}
+
+.form__input {
+    width: 100%;
+    padding: 0.6em;
+    font-size: 1.3em;
+}
+
+.form__required {
+    float: right;
+    font-size: 0.8em;
+    background: #ddd;
+    padding: 0.3em;
+}
+
+.form__hint {
+    margin: 0;
+    font-size: 1.1em;
+}
+
+.form__hint:before {
+    content: "\1F6C8";
+    font-size: 1.2em;
+    margin: 0 0.2em 0 0;
+}
+
+.form_button {
+	position: absolute;
+	left: 200px;
+    background: #aaa;
+    color: #000;
+    border: none;
+    padding: 0.6em;
+    font-size: 1.4em;
+    float: right;
+}
+
+.top_middlers {
+
+    margin: 0 0 0 5em;
+	padding: 0.3em;
+}
+
+.Log_Out_button {
+	position: absolute;
+	left: 10px;
+	top: 10px;
+    background: #aaa;
+    color: #000;
+    border: none;
+    padding: 0.6em;
+    font-size: 1.4em;
+    float: right;
+    text-decoration: none;
+}
+
+.Log_Out_button:hover{background-color: #cba;}
+.form_button:hover{background-color: #cba;}
+
+</style>
+</head>
+
+<body>
+
+<a href="Log_In.htm" class="Log_Out_button">LogOut</a>
+<br />
+<br />
+<h1 class="top_middlers">Main Menu</h1>
+<form>
+	<fieldset>
+		<button onclick="location.href='Item_Order.html'" type="button" class="form_button">Item Order</button><br /><br /><br />
+		<button onclick="location.href='Choose_Stocks.htm'" type="button" class="form_button">Stock List</button><br /><br /><br />
+		<button class="form_button">Configure Line</button><br /><br /><br />
+	</fieldset>
+</form>
+
+</body>
+</html>
