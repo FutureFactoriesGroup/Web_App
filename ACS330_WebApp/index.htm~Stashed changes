@@ -69,6 +69,21 @@
 <h1 class="top_middlers">Log In</h1>
 <br />
 
+<<<<<<< Updated upstream:ACS330_WebApp/Log_In.htm
+=======
+<!---
+<form action="http://google.com">
+
+		<label for=“username”>Username</label><br />
+		<input type=“text” id=“username” name=“email” required><br />
+
+		<label for=“passsword”>Password</label><br />
+		<input type="password" id="password" name=“password” maxlength="6"><br />
+
+		<input type="submit" value="Go to Google" />
+</form>
+--->
+>>>>>>> Stashed changes:ACS330_WebApp/index.htm
 <form action="Main_Menu.htm" method="post">
     <div class="form__element">
         <label class="form__label" for="email">
@@ -91,6 +106,19 @@
 
     <input class="form__submit" type="submit" value="Login">
 </form>
+<<<<<<< Updated upstream:ACS330_WebApp/Log_In.htm
+=======
+
+
+<script>
+function chckPassword() {
+	var Password = document.getElementById(“password”).value;
+	if (Password !== 10) {
+ 		location.href=“Choose_Stocks.htm”;
+ 	}
+}
+</script>
+>>>>>>> Stashed changes:ACS330_WebApp/index.htm
 
 </body>
 </html>

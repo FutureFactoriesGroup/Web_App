@@ -19,6 +19,7 @@
 
 	<script type="text/javascript" type="text/javascript">
 
+<<<<<<< Updated upstream
 	/*
 	//To test the sha256 checksum by calculating and logging it to the console:
 	var checksum = new jsSHA("SHA-256", "TEXT");
@@ -37,6 +38,8 @@
 	//console.log(digest);
 
 
+=======
+>>>>>>> Stashed changes
 	// Connecting to ROS
   	// -----------------
 
@@ -93,10 +96,15 @@
 		var thisOrder = new ROSLIB.Message({ //in order to publish
 			data: (values.join())
 	  	});
+<<<<<<< Updated upstream
 		checksum.update(thisOrder);
 
 		console.log(checksum.getHash("HEX"));
 	  Order.publish(thisOrder); //the string of Item Porperties should published instead of twist
+=======
+
+	  	Order.publish(thisOrder); //the string of Item Porperties should published instead of twist
+>>>>>>> Stashed changes
 	}
 
 	function goBack() {
@@ -228,7 +236,10 @@
 </head>
 
 <body>
+<<<<<<< Updated upstream
 	<img class="top_middlers" src="Position_IMG.png" width="300" height="250">
+=======
+>>>>>>> Stashed changes
 	<a href="Main_Menu.htm"
 	class="Main_Menu_button">Main Menu</a>
 	<a href="Log_In.htm"
