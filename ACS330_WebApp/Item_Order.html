@@ -14,7 +14,28 @@
 	<script type="text/javascript" src="http://static.robotwebtools.org/EventEmitter2/current/eventemitter2.min.js"></script>
 	<script type="text/javascript" src="http://static.robotwebtools.org/roslibjs/current/roslib.min.js"></script>
 	-->
+
+	<script type="text/javascript" src="sha256.js"></script> <!-- include the .js file for sha256 -->
+
 	<script type="text/javascript" type="text/javascript">
+
+	/*
+	//To test the sha256 checksum by calculating and logging it to the console:
+	var checksum = new jsSHA("SHA-256", "TEXT");
+	checksum.update("test test test");
+	var hash = checksum.getHash("HEX");
+	CommandData = '2C';
+	OrderData = '51210062'+ CommandData + hash;
+	//console.log(checksum.getHash("HEX"));
+	console.log(OrderData);
+	*/
+
+
+
+
+	//const digest = crypto.subtle.digest(SHA-256, buffer);
+	//console.log(digest);
+
 
 	// Connecting to ROS
   	// -----------------
@@ -63,6 +84,7 @@
 
 	function submit() {
 		var values = [];
+		var checksum = new jsSHA("SHA-256", "TEXT"); //checksum object
 		jQuery("input[type='radio']:checked").each(function(){
 			values.push(jQuery(this).next("a").text());
 			});
@@ -71,8 +93,10 @@
 		var thisOrder = new ROSLIB.Message({ //in order to publish
 			data: (values.join())
 	  	});
+		checksum.update(thisOrder);
 
-	  	Order.publish(thisOrder); //the string of Item Porperties should published instead of twist
+		console.log(checksum.getHash("HEX"));
+	  Order.publish(thisOrder); //the string of Item Porperties should published instead of twist
 	}
 
 	function goBack() {
@@ -129,7 +153,7 @@
 	.top_middlers {
 
 		margin: 0 0 0 5em;
-		padding: 0.3em;
+		padding: 0.1em;
 	}
 
 	.Log_Out_button {
@@ -204,6 +228,7 @@
 </head>
 
 <body>
+	<img class="top_middlers" src="Position_IMG.png" width="300" height="250">
 	<a href="Main_Menu.htm"
 	class="Main_Menu_button">Main Menu</a>
 	<a href="Log_In.htm"
@@ -222,7 +247,7 @@
 		</div>
 		<div class="column";>
 			<h2>Shape</h2>
-			<input type="radio" name="Shape"> <a class="ref">Cirlce</a><br />
+			<input type="radio" name="Shape"> <a class="ref">Circle</a><br />
 			<input type="radio" name="Shape"> <a class="ref">Square</a><br />
 			<input type="radio" name="Shape"> <a class="ref">Triangle</a><br />
 			<input type="radio" name="Shape"> <a class="ref">Diamond</a><br />
