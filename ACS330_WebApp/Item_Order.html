@@ -41,7 +41,7 @@
   	// -----------------
 
 	  var ros = new ROSLIB.Ros({
-		url : 'ws://localhost:9090'
+		url : 'ws://143.167.55.175:9090'
 	  });
 
 	  ros.on('connection', function() {
@@ -90,13 +90,35 @@
 			});
 		alert("You chose: " + values.join()); //let the user know what he/she ordered
 
-		var thisOrder = new ROSLIB.Message({ //in order to publish
-			data: (values.join())
-	  	});
-		checksum.update(thisOrder);
+		var orderprops = [];
+		i=0;
+		while (i<3){
+			if (i==0){
+				prop = values[i];
+			} else {
+				prop = (values[i].toString()).slice(0,1);
+			}
+			orderprops[i]=prop;
+			i=i+1;
+		}
 
-		console.log(checksum.getHash("HEX"));
-	  Order.publish(thisOrder); //the string of Item Porperties should published instead of twist
+		var thisOrder = orderprops.join('');
+		console.log(thisOrder);
+		checksum.update('5121006003' + thisOrder);
+		var hash = checksum.getHash("HEX");
+		var OrderData = [];
+		OrderData.push('5121006003');
+		OrderData.push(thisOrder);
+		OrderData.push(hash);
+		console.log(OrderData.join(''))
+		//OrderData = '51210063'+ thisOrder + hash;
+		//var thisOrderstring = thisOrder.toString();
+		//console.log(thisOrderstring.length);
+
+		var OrderCommand = new ROSLIB.Message({ //in order to publish
+			data: (OrderData.join(''))
+			});
+		Order.publish(OrderCommand); //the string of Item Porperties should published instead of twist
 	}
 
 	function goBack() {
@@ -256,7 +278,6 @@
 		<div class="column";>
 			<h2>Colour</h2>
 			<input type="radio" name="Colour"> <a class="ref">Black</a><br />
-			<input type="radio" name="Colour"> <a class="ref">Red</a><br />
 		</div>
 	</div>
 	<br />
