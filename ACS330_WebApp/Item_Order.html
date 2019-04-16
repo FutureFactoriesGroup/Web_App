@@ -92,28 +92,21 @@
 
 		var orderprops = [];
 		i=0;
-		while (i<3){
-			if (i==0){
-				prop = values[i];
-			} else {
-				prop = (values[i].toString()).slice(0,1);
-			}
+		while (i<5){
+			prop = (values[i].toString()).slice(0,1);
 			orderprops[i]=prop;
 			i=i+1;
 		}
 
 		var thisOrder = orderprops.join('');
 		console.log(thisOrder);
-		checksum.update('5121006003' + thisOrder);
+		checksum.update('5121006005' + thisOrder);
 		var hash = checksum.getHash("HEX");
 		var OrderData = [];
-		OrderData.push('5121006003');
+		OrderData.push('5121006005');
 		OrderData.push(thisOrder);
 		OrderData.push(hash);
-		console.log(OrderData.join(''))
-		//OrderData = '51210063'+ thisOrder + hash;
-		//var thisOrderstring = thisOrder.toString();
-		//console.log(thisOrderstring.length);
+		console.log(OrderData.join('')) //test in console
 
 		var OrderCommand = new ROSLIB.Message({ //in order to publish
 			data: (OrderData.join(''))
