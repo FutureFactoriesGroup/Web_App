@@ -4,6 +4,11 @@
 	<title> Factory of the Future - Choose Stocks</title>
 	<meta charset="utf-8">
 	<meta name="author" content=“Group2”>
+	<script>
+	function goBack() {
+	  window.history.back();
+	}
+	</script>
 	<style>
 .form__element {
     margin: 0 0 1em 0;
@@ -39,24 +44,14 @@
     margin: 0 0.2em 0 0;
 }
 
-.form_button {
-	position: absolute;
-	left: 200px;
-    background: #aaa;
-    color: #000;
-    border: none;
-    padding: 0.6em;
-    font-size: 1.4em;
-    float: right;
-}
-
 .top_middlers {
-
-    margin: 0 0 0 5em;
+	font-family: Arial, Helvetica, sans-serif;
+  margin: 0 0 0 5em;
 	padding: 0.3em;
 }
 
 .Log_Out_button {
+	font-family: Arial, Helvetica, sans-serif;
 	position: absolute;
 	left: 10px;
 	top: 10px;
@@ -70,6 +65,7 @@
 }
 
 .Main_Menu_button {
+	font-family: Arial, Helvetica, sans-serif;
 	position: absolute;
 	right: 10px;
 	top: 10px;
@@ -83,16 +79,14 @@
 }
 
 .Back_button {
+	font-family: Arial, Helvetica, sans-serif;
 	position: absolute;
-	left: 10px;
-	bottom: 10px;
-    background: #aaa;
-    color: #000;
-    border: none;
-    padding: 0.6em;
-    font-size: 1.4em;
-    float: right;
-    text-decoration: none;
+	left:10px;
+	padding: 0.6em;
+	background: #aaa;
+	color: #000;
+	border: none;
+	font-size: 1.4em;
 }
 
 .Log_Out_button:hover{background-color: #cba;}
@@ -100,16 +94,48 @@
 .Back_button:hover{background-color: #cba;}
 .form_button:hover{background-color: #cba;}
 
+.form_button {
+	font-family: Arial, Helvetica, sans-serif;
+	width: 300px;
+	background: #aaa;
+	color: #000;
+	border: none;
+	padding: 0.6em;
+	font-size: 1.4em;
+}
+
+.form_button_container{
+	width: 300px;
+	margin: 0 auto;
+}
+
+#maincontainer
+{
+top:0px;
+padding-top:0;
+margin:auto; position:relative;
+width:700px;
+height:100%;
+}
+
+.Title {
+  width: 200px;
+  margin: 0 auto;
+}
+
 	</style>
 </head>
 
 <body>
+	<div id="maincontainer">
 	<a href="Main_Menu.htm"
 	class="Main_Menu_button">Main Menu</a>
-	<a href="Log_In.htm"
+	<a href="index.htm"
 	class="Log_Out_button">LogOut</a>
 	<br /><br />
-	<h1 class="top_middlers">Choose Stocks</h1>
+	<div class="Title">
+	<h1>Choose Stocks</h1>
+	</div>
 	<form>
 		<fieldset>
 			<input type=checkbox>Stock 1<br />
@@ -118,17 +144,14 @@
 			<input type=checkbox>Stock 4<br />
 			<input type=checkbox>Stock 5<br />
 
-			<button class="form_button">Generate Stock List</button>
-			<br /><br /><br />
+			<div class="form_button_container">
+			<input type="button" value="Generate Stock List" class="form_button" />
+			</div>
+			<br />
 		</fieldset>
 	</form>
+	<br /><br /><br /><br />
 	<button onclick=goBack(); type=“button” class="Back_button">Back</button>
-
-<script>
-function goBack() {
-  window.history.back();
-}
-</script>
-
+</div>
 </body>
 </html>

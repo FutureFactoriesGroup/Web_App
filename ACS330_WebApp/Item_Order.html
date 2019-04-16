@@ -162,14 +162,18 @@
 	}
 
 	.form_button {
-		position: absolute;
-		left: 200px;
+		font-family: Arial, Helvetica, sans-serif;
+		width: 135px;
 		background: #aaa;
 		color: #000;
 		border: none;
 		padding: 0.6em;
 		font-size: 1.4em;
-		float: right;
+	}
+
+	.form_button_container{
+		width: 135px;
+  	margin: 0 auto;
 	}
 
 	.top_middlers {
@@ -179,6 +183,7 @@
 	}
 
 	.Log_Out_button {
+		font-family: Arial, Helvetica, sans-serif;
 		position: absolute;
 		left: 10px;
 		top: 10px;
@@ -192,7 +197,9 @@
 	}
 
 	.Main_Menu_button {
+		font-family: Arial, Helvetica, sans-serif;
 		position: absolute;
+		width: 6.5em;
 		right: 10px;
 		top: 10px;
 		background: #aaa;
@@ -205,16 +212,25 @@
 	}
 
 	.Back_button {
+		font-family: Arial, Helvetica, sans-serif;
 		position: absolute;
 		left: 10px;
-		bottom: 10px;
+		padding: 0.6em;
 		background: #aaa;
 		color: #000;
 		border: none;
-		padding: 0.6em;
 		font-size: 1.4em;
-		float: right;
-		text-decoration: none;
+	}
+
+	.Title {
+  	width: 10em;
+  	margin: 0 auto;
+	}
+
+	.Image {
+  	width: 200px;
+  	height: 150px;
+  	margin: 0 auto;
 	}
 
 	.Log_Out_button:hover{background-color: #cba;}
@@ -229,7 +245,7 @@
 
 	.column {
 		float: left;
-		width: 50%;
+		width: 33.33%;
 		padding: 2px;
 	}
 
@@ -246,26 +262,40 @@
 			width: 100%;
 		}
 	}
+
+	#maincontainer
+{
+top:0px;
+padding-top:0;
+margin:auto; position:relative;
+width:700px;
+height:100%;
+}
+
 	</style>
 </head>
 
 <body>
-	<img class="top_middlers" src="Position_IMG.png" width="300" height="250">
+	<div id="maincontainer">
+	<div class="Image" >
+	<img src="Position_IMG.png" width="200" height="150">
+	</div>
 	<a href="Main_Menu.htm"
 	class="Main_Menu_button">Main Menu</a>
-	<a href="Log_In.htm"
+	<a href="index.htm"
 	class="Log_Out_button">LogOut</a>
-	<br /><br />
-	<h1 class="top_middlers">Item Order</h1>
+	<div class="Title">
+	<h1>Item Order</h1>
+	</div>
 	<fieldset>
 	<div class="row">
-		<div class="column";">
+		<div class="column";>
 			<h2>Position 1:</h2>
 			<input type="radio" name="Shape1"> <a class="ref">Circle</a><br />
 			<input type="radio" name="Shape1"> <a class="ref">Square</a><br />
 			<input type="radio" name="Shape1"> <a class="ref">Triangle</a><br />
 			<input type="radio" name="Shape1"> <a class="ref">Diamond</a><br />
-			<input type="radio" name="Shape1"> <a class="ref">None</a><br />
+			<input type="radio" name="Shape1" checked> <a class="ref">None</a><br />
 		</div>
 		<div class="column";>
 			<h2>Position 2:</h2>
@@ -273,7 +303,7 @@
 			<input type="radio" name="Shape2"> <a class="ref">Square</a><br />
 			<input type="radio" name="Shape2"> <a class="ref">Triangle</a><br />
 			<input type="radio" name="Shape2"> <a class="ref">Diamond</a><br />
-			<input type="radio" name="Shape2"> <a class="ref">None</a><br />
+			<input type="radio" name="Shape2" checked> <a class="ref">None</a><br />
 		</div>
 		<div class="column";>
 			<h2>Position 3:</h2>
@@ -281,7 +311,7 @@
 			<input type="radio" name="Shape3"> <a class="ref">Square</a><br />
 			<input type="radio" name="Shape3"> <a class="ref">Triangle</a><br />
 			<input type="radio" name="Shape3"> <a class="ref">Diamond</a><br />
-			<input type="radio" name="Shape3"> <a class="ref">None</a><br />
+			<input type="radio" name="Shape3" checked> <a class="ref">None</a><br />
 		</div>
 		<div class="column";>
 			<h2>Position 4:</h2>
@@ -289,16 +319,23 @@
 			<input type="radio" name="Shape4"> <a class="ref">Square</a><br />
 			<input type="radio" name="Shape4"> <a class="ref">Triangle</a><br />
 			<input type="radio" name="Shape4"> <a class="ref">Diamond</a><br />
-			<input type="radio" name="Shape4"> <a class="ref">None</a><br />
+			<input type="radio" name="Shape4" checked> <a class="ref" >None</a><br />
+		</div>
+		<div class="column";>
+			<h2>Hole Punch:</h2>
+			<input type="radio" name="Hole"> <a class="ref">Yes</a><br />
+			<input type="radio" name="Hole" checked> <a class="ref" >No</a><br />
 		</div>
 
 	</div>
 	<br />
+	<div class="form_button_container">
 	<input type="button" onclick=submit(); value="Order Item" class="form_button" />
+	</div>
 	<br /><br /><br />
 	</fieldset>
-
+	<br /><br />
 	<button onclick=goBack(); type=“button” class="Back_button">Back</button>
-
+</div>
 </body>
 </html>
