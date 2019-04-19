@@ -6,6 +6,19 @@
     <meta charset="utf-8">
     <meta name="author" content=“Group2”>
 
+<script type="text/javascript" type="text/javascript">
+
+function log_in() {
+  var userInfo = document.getElementById('email');
+  //console.log(userInfo.value);
+  localStorage.userEmail = userInfo.value;
+  //console.log(localStorage.userEmail);
+  //alert("Your email: " + userInfo.value);
+  //window.location.href = 'Main_Menu.htm';
+}
+
+</script>
+
 <style>
 .form__element {
     margin: 0 0 1em 0;
@@ -101,9 +114,9 @@ height:100%;
             Email
             <span class="form__required">required</span>
         </label>
-        <input class="form__input" id="email" type="text" name="email" required pattern="[^]+@[^]+[.][a-z]{2,63}$" autocomplete="email">
+        <input class="form__input" id="email" type="text" name="email" required maxlength="254" required pattern="[^]+@[^]+[.][a-z]{2,63}$" autocomplete="email">
+        <!-- RFC2821 (Simple Mail Transfer Protocol) defines max length of email address = 254 characters --->
     </div>
-
     <div class="form__element">
         <label class="form__label" for="password">
             Password
@@ -113,9 +126,9 @@ height:100%;
         <p class="form__hint" id="passwordHint">The password must be at least 8 characters long.</p>
     </div>
 
-    <a href="forgotPassword.html">Forgot password?</a>
+    <!-- <a href="forgotPassword.html">Forgot password?</a> --->
 
-    <input class="form__submit" type="submit" value="Login">
+    <input class="form__submit" onclick=log_in(); type="submit" value="Login">
 </form>
 </div>
 </body>

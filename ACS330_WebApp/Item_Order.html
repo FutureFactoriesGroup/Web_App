@@ -19,6 +19,9 @@
 
 	<script type="text/javascript" type="text/javascript">
 
+	//TEST
+	//console.log(localStorage.userEmail); //this should output the email used to log in
+
 	/*
 	//To test the sha256 checksum by calculating and logging it to the console:
 	var checksum = new jsSHA("SHA-256", "TEXT");
@@ -99,14 +102,28 @@
 		}
 
 		var thisOrder = orderprops.join('');
-		console.log(thisOrder);
-		checksum.update('5121006005' + thisOrder);
+		console.log('Properties for this order are: ' + thisOrder);
+		//to determine email address length and add 5 (for props):
+		var email = localStorage.userEmail; //get email address from web storage
+		var cmdDataLength = [];
+		if (email.length < 10) { //to set length in necessary format
+			cmdDataLength = [0,0,(email.length+5)];
+		} else if (email.length < 100) {
+			cmdDataLength = [0,(email.length+5)];
+		} else {
+			cmdDataLength = [(email.length+5)];
+		}
+		cmdDataLength = cmdDataLength.join('');
+		console.log('Command data length is: ' + cmdDataLength);
+		//calculate checksum:
+		checksum.update('5121006' + cmdDataLength + thisOrder + localStorage.userEmail);
 		var hash = checksum.getHash("HEX");
 		var OrderData = [];
-		OrderData.push('5121006005');
-		OrderData.push(thisOrder);
+		OrderData.push('5121006' + cmdDataLength);
+		OrderData.push(thisOrder); //length = 5 bytes
+		OrderData.push(localStorage.userEmail); //length = email.length
 		OrderData.push(hash);
-		console.log(OrderData.join('')) //test in console
+		console.log('Order data is: ' + OrderData.join('')) //test in console
 
 		var OrderCommand = new ROSLIB.Message({ //in order to publish
 			data: (OrderData.join(''))
