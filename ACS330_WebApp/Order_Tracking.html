@@ -71,10 +71,10 @@
 		console.log('Received message on ' + listener.name + ': ' + message.data);
 
 		orderNum = (message.data).slice(0,1);
-		Dispatch = (message.data).slice(1,2);
-		processOne = (message.data).slice(2,3);
-	 	processTwo = (message.data).slice(3,4);
-		orderCompltd = (message.data).slice(4,5);
+		Dispatch = (message.data).slice(3,4);
+		processOne = (message.data).slice(6,7);
+	 	processTwo = (message.data).slice(9,10);
+		orderCompltd = (message.data).slice(12,13);
 		var tracker = [orderNum,Dispatch,processOne,processTwo,orderCompltd];
 		console.log('tracker has: ' + tracker.join(''));
 
