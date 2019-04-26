@@ -94,7 +94,7 @@
 				ids[0].style.color='black';
 			} else {
 				ids[i].style.color='black'; //if nothing is in progress
-				if ((tracker[1]=="2") && ((tracker[2]&&tracker[3]&&tracker[4]) != "1")) { //and order has been dispatched
+				if ((tracker[1]=="2") && ((tracker[2]!="1" &&tracker[3]!="1" &&tracker[4])!= "1")) { //and order has been dispatched
 					ids[0].style.color='green'; //say that its being transported
 				}
 			}
