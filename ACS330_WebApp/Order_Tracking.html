@@ -2,7 +2,7 @@
 <html>
 <head>
 	<title> Factory of the Future - Track Order</title>
-		<meta charset="utf-8">
+	<meta charset="utf-8">
 	<meta name="author" content=“Group2”>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -13,338 +13,548 @@
 	<!-- when you've got internet
 	<script type="text/javascript" src="http://static.robotwebtools.org/EventEmitter2/current/eventemitter2.min.js"></script>
 	<script type="text/javascript" src="http://static.robotwebtools.org/roslibjs/current/roslib.min.js"></script>
-	-->
+-->
 
-	<script type="text/javascript" src="sha256.js"></script> <!-- include the .js file for sha256 -->
+<script type="text/javascript" src="sha256.js"></script> <!-- include the .js file for sha256 -->
 
-	<script type="text/javascript" type="text/javascript">
+<script type="text/javascript" type="text/javascript">
 
-	//TEST
-	//console.log(localStorage.userEmail); //this should output the email used to log in
+//TEST
+//console.log(localStorage.userEmail); //this should output the email used to log in
+
+/*
+//To test the sha256 checksum by calculating and logging it to the console:
+var checksum = new jsSHA("SHA-256", "TEXT");
+checksum.update("test test test");
+var hash = checksum.getHash("HEX");
+CommandData = '2C';
+OrderData = '51210062'+ CommandData + hash;
+//console.log(checksum.getHash("HEX"));
+console.log(OrderData);
+*/
+
+
+
+
+//const digest = crypto.subtle.digest(SHA-256, buffer);
+//console.log(digest);
+
+
+// Connecting to ROS
+// -----------------
+
+var ros = new ROSLIB.Ros({
+	url : 'ws://143.167.55.175:9090'
+});
+
+ros.on('connection', function() {
+	console.log('Connected to websocket server.');
+});
+
+ros.on('error', function(error) {
+	console.log('Error connecting to websocket server: ', error);
+});
+
+ros.on('close', function() {
+	console.log('Connection to websocket server closed.');
+});
+
+// Subscribing to a Topic
+
+var listener = new ROSLIB.Topic({
+	ros : ros,
+	name : '/order_tracker',
+	messageType : 'std_msgs/String'
+});
+
+listener.subscribe(function(message) {
+	console.log('Received message on ' + listener.name + ': ' + message.data);
+
+	orderNum = (message.data).slice(1,2);
+	Dispatch = (message.data).slice(4,5);
+	processOne = (message.data).slice(7,8);
+	processTwo = (message.data).slice(10,11);
+	orderCompltd = (message.data).slice(13,14);
+	var tracker = [orderNum,Dispatch,processOne,processTwo,orderCompltd];
+	console.log('tracker has: ' + tracker.join(''));
+	//console.log('trackers: ' + tracker[0]+ tracker[1]+ tracker[2]+ tracker[3]+ tracker[4]);
+
+	//Progress Bars:
+	if (tracker[0]=="1") {
+		var element = document.getElementById("order1Progress");
+		var labelID = "status1";
+	} else if (tracker[0]=="2") {
+		var element = document.getElementById("order2Progress");
+		var labelID = "status2";
+	}
+	for (var i = 1; i < tracker.length; i++) {
+		if (i==4) {
+			if (tracker[i]=="2") {
+				update(element,labelID,87.5,100); //go completed is done, 100%
+			}
+		} else if ((i==1)&&(tracker[i]=="1")) {
+			update(element,labelID,0,12.5);
+		} else {
+			if (tracker[i]=="2") { //if a stage is done
+				if (tracker[i+1]=="0") { //and the next stage is not started yet
+					update(element,labelID,((i-1)*25)+12.5,i*25); //raise until progress = i*25
+				} else if (tracker[i+1]=="1") {//but if the next stage has started
+					update(element,labelID,i*25,(i*25)+12.5); //raise until progress = i*1.5*25
+				} //and if tracker[i+1]=="2" do nothing, move on to the next i
+			}
+			if (tracker[i]=="0") { //if a stage is done
+				if (tracker[i+1]=="1") {//but if the next stage has started
+					update(element,labelID,(i-1)*25,(i*25)+12.5); //raise until progress = i*1.5*25
+				} //and if tracker[i+1]=="2" do nothing, move on to the next i
+			}
+		}
+	}
+
+	function update(element,labelID,start,stop) {
+		var width = start;//where to start from
+		var identity = setInterval(progress, 1);
+		var status = "boo";
+		function progress() {
+			if (width >= stop) { //where to stop
+				clearInterval(identity);
+				if (width>=12.5) {
+					status="Dispatching";
+				} if (width>=25) {
+					status="Dispatched, being Transported";
+				} if (width>=37.5) {
+					status="Performing Process 1";
+				} if (width>=50) {
+					status="Process 1 Complete, being Transported";
+				} if (width>=62.5) {
+					status="Performing Process 2";
+				} if (width>=75) {
+					status="Process 2 Complete, being Transported";
+				} if (width>=87.5) {
+					status="Finishing up";
+				} if (width>=100) {
+					status="Order Complete!";
+				}
+				document.getElementById(labelID).innerHTML = status;
+			} else {
+				width=width+0.5;
+				element.style.width = width + '%';
+			}
+		}
+	}
 
 	/*
-	//To test the sha256 checksum by calculating and logging it to the console:
-	var checksum = new jsSHA("SHA-256", "TEXT");
-	checksum.update("test test test");
-	var hash = checksum.getHash("HEX");
-	CommandData = '2C';
-	OrderData = '51210062'+ CommandData + hash;
-	//console.log(checksum.getHash("HEX"));
-	console.log(OrderData);
-	*/
+	if (tracker[0] == "1") {
+	var ids=[transporting1,dispatched1,process11,process21,completed1];
+} else if (tracker[0] == "2") {
+var ids=[transporting2,dispatched2,process12,process22,completed2];
+}
+i=1;
+while (i<5){
+if (tracker[i]=="1") {
+ids[i].style.color='orange';
+ids[0].style.color='black';
+} else if (tracker[i]=="2") {
+ids[i].style.color='green';
+ids[0].style.color='black';
+} else {
+ids[i].style.color='black'; //if nothing is in progress
+if ((tracker[1]=="2") && (((tracker[2]!="1") && (tracker[3]!="1") && (tracker[4])!= "1"))) { //and order has been dispatched
+ids[0].style.color='orange'; //say that its being transported
+}
+}
+i=i+1;
+}
+*/
+//listener.unsubscribe();
+});
 
-
-
-
-	//const digest = crypto.subtle.digest(SHA-256, buffer);
-	//console.log(digest);
-
-
-	// Connecting to ROS
-  	// -----------------
-
-	  var ros = new ROSLIB.Ros({
-		url : 'ws://143.167.55.175:9090'
-	  });
-
-	  ros.on('connection', function() {
-		console.log('Connected to websocket server.');
-	  });
-
-	  ros.on('error', function(error) {
-		console.log('Error connecting to websocket server: ', error);
-	  });
-
-	  ros.on('close', function() {
-		console.log('Connection to websocket server closed.');
-	  });
-
-	  // Subscribing to a Topic
-
-	  var listener = new ROSLIB.Topic({
-		ros : ros,
-		name : '/order_tracker',
-		messageType : 'std_msgs/String'
-	  });
-
-	  listener.subscribe(function(message) {
-		console.log('Received message on ' + listener.name + ': ' + message.data);
-
-		orderNum = (message.data).slice(1,2);
-		Dispatch = (message.data).slice(4,5);
-		processOne = (message.data).slice(7,8);
-	 	processTwo = (message.data).slice(10,11);
-		orderCompltd = (message.data).slice(13,14);
-		var tracker = [orderNum,Dispatch,processOne,processTwo,orderCompltd];
-		console.log('tracker has: ' + tracker.join(''));
-		console.log('trackerss: ' + tracker[0]+ tracker[1]+ tracker[2]+ tracker[3]+ tracker[4]);
-
-		if (tracker[0] == "1") {
-			var ids=[transporting1,dispatched1,process11,process21,completed1];
-		} else if (tracker[0] == "2") {
-			var ids=[transporting2,dispatched2,process12,process22,completed2];
-		}
-		i=1;
-		while (i<5){
-			if (tracker[i]=="1") {
-				ids[i].style.color='orange';
-				ids[0].style.color='black';
-			} else if (tracker[i]=="2") {
-				ids[i].style.color='green';
-				ids[0].style.color='black';
-			} else {
-				ids[i].style.color='black'; //if nothing is in progress
-				if ((tracker[1]=="2") && (((tracker[2]!="1") && (tracker[3]!="1") && (tracker[4])!= "1"))) { //and order has been dispatched
-					ids[0].style.color='orange'; //say that its being transported
-				}
-			}
-			i=i+1;
-		}
-		//listener.unsubscribe();
-	  });
-
-	function goBack() {
-  		window.history.back();
-	}
-
-
-	function show(aval) {
-	    if (aval == "1") {
-				Order1.style.display = 'table';
-				Order2.style.display = 'none';
-	    }
-			else if (aval == "2") {
-				Order1.style.display = 'none';
-				Order2.style.display = 'table';
-			}
-	    else if (aval="0") {
-				Order1.style.display = 'none';
-				Order2.style.display = 'none';
-	    }
-	  }
-
-	</script>
-	<style>
-	.form__element {
-		margin: 0 0 1em 0;
-	}
-
-	.form__label {
-	    font-family: Arial, Helvetica, sans-serif;
-	    font-size: 1.2em;
-	    display: block;
-	    margin: 0 0 0.4em 0;
-	}
-
-	.form__input {
-		width: 100%;
-		padding: 0.6em;
-		font-size: 1.3em;
-	}
-
-	.form__required {
-		float: right;
-		font-size: 0.8em;
-		background: #ddd;
-		padding: 0.3em;
-	}
-
-	.form__hint {
-		margin: 0;
-		font-size: 1.1em;
-	}
-
-	.form__hint:before {
-		content: "\1F6C8";
-		font-size: 1.2em;
-		margin: 0 0.2em 0 0;
-	}
-
-	.form_button {
-		font-family: Arial, Helvetica, sans-serif;
-		width: 135px;
-		background: #aaa;
-		color: #000;
-		border: none;
-		padding: 0.6em;
-		font-size: 1.4em;
-	}
-
-	.form_button_container{
-		width: 135px;
-  	margin: 0 auto;
-	}
-
-	.top_middlers {
-
-		margin: 0 0 0 5em;
-		padding: 0.1em;
-	}
-
-	.Log_Out_button {
-		font-family: Arial, Helvetica, sans-serif;
-		position: absolute;
-		left: 10px;
-		top: 10px;
-		background: #aaa;
-		color: #000;
-		border: none;
-		padding: 0.6em;
-		font-size: 1.4em;
-		float: right;
-		text-decoration: none;
-	}
-
-	.Main_Menu_button {
-		font-family: Arial, Helvetica, sans-serif;
-		position: absolute;
-		width: 6.5em;
-		right: 10px;
-		top: 10px;
-		background: #aaa;
-		color: #000;
-		border: none;
-		padding: 0.6em;
-		font-size: 1.4em;
-		float: right;
-		text-decoration: none;
-	}
-
-	.Back_button {
-		font-family: Arial, Helvetica, sans-serif;
-		position: absolute;
-		left: 10px;
-		padding: 0.6em;
-		background: #aaa;
-		color: #000;
-		border: none;
-		font-size: 1.4em;
-	}
-
-	.Title {
-  	width: 12em;
-  	margin: 0 auto;
-	}
-
-	.Image {
-  	width: 200px;
-  	height: 150px;
-  	margin: 0 auto;
-	}
-
-	.Log_Out_button:hover{background-color: #cba;}
-	.Main_Menu_button:hover{background-color: #cba;}
-	.Back_button:hover{background-color: #cba;}
-	.form_button:hover{background-color: #cba;}
-
-	*	{
-		box-sizing: border-box;
-	}
-
-
-	.column {
-		float: left;
-		width: 50%;
-		padding: 2px;
-	}
-
-
-	.row:after {
-		content: "";
-		display: table;
-		clear: both;
-	}
-
-
-	@media screen and (max-width: 300px) {
-		.column {
-			width: 100%;
-		}
-	}
-
-	#maincontainer
-{
-top:0px;
-padding-top:0;
-margin:auto; position:relative;
-width:700px;
-height:100%;
+function goBack() {
+	window.history.back();
 }
 
-	</style>
+////////////////////////////
+/*
+function tester(tracker) {
+//for testing:
+console.log('tracker (test) has: ' + tracker.join(''));
+//testing progress bars:
+if (tracker[0]=="1") {
+var element = document.getElementById("order1Progress");
+var labelID = "status1";
+} else if (tracker[0]=="2") {
+var element = document.getElementById("order2Progress");
+var labelID = "status2";
+}
+for (var i = 1; i < tracker.length; i++) {
+if (i==4) {
+if (tracker[i]=="2") {
+update(element,labelID,87.5,100); //go completed is done, 100%
+}
+} else if ((i==1)&&(tracker[i]=="1")) {
+update(element,labelID,0,12.5);
+} else {
+if (tracker[i]=="2") { //if a stage is done
+if (tracker[i+1]=="0") { //and the next stage is not started yet
+update(element,labelID,((i-1)*25)+12.5,i*25); //raise until progress = i*25
+} else if (tracker[i+1]=="1") {//but if the next stage has started
+update(element,labelID,i*25,(i*25)+12.5); //raise until progress = i*1.5*25
+} //and if tracker[i+1]=="2" do nothing, move on to the next i
+}
+if (tracker[i]=="0") { //if a stage is done
+if (tracker[i+1]=="1") {//but if the next stage has started
+update(element,labelID,(i-1)*25,(i*25)+12.5); //raise until progress = i*1.5*25
+} //and if tracker[i+1]=="2" do nothing, move on to the next i
+}
+}
+}
+
+function update(element,labelID,start,stop) {
+var width = start;//where to start from
+var identity = setInterval(progress, 1);
+var status = "boo";
+function progress() {
+if (width >= stop) { //where to stop
+clearInterval(identity);
+if (width>=12.5) {
+status="Dispatching";
+} if (width>=25) {
+status="Dispatched, being Transported";
+} if (width>=37.5) {
+status="Performing Process 1";
+} if (width>=50) {
+status="Process 1 Complete, being Transported";
+} if (width>=62.5) {
+status="Performing Process 2";
+} if (width>=75) {
+status="Process 2 Complete, being Transported";
+} if (width>=87.5) {
+status="Finishing up";
+} if (width>=100) {
+status="Order Complete!";
+}
+document.getElementById(labelID).innerHTML = status;
+} else {
+width=width+0.5;
+element.style.width = width + '%';
+}
+}
+}
+}
+*/
+
+function show(aval) {
+	if (aval == "1") {
+		Order1.style.display = 'block';
+		Order2.style.display = 'none';
+	}
+	else if (aval == "2") {
+		Order1.style.display = 'none';
+		Order2.style.display = 'block';
+		tester();
+	}
+	else if (aval="0") {
+		Order1.style.display = 'none';
+		Order2.style.display = 'none';
+	}
+}
+
+</script>
+<style>
+.form__element {
+	margin: 0 0 1em 0;
+}
+
+.form__label {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 1.2em;
+	display: block;
+	margin: 0 0 0.4em 0;
+}
+
+.form__input {
+	width: 100%;
+	padding: 0.6em;
+	font-size: 1.3em;
+}
+
+.form__required {
+	float: right;
+	font-size: 0.8em;
+	background: #ddd;
+	padding: 0.3em;
+}
+
+.form__hint {
+	margin: 0;
+	font-size: 1.1em;
+}
+
+.form__hint:before {
+	content: "\1F6C8";
+	font-size: 1.2em;
+	margin: 0 0.2em 0 0;
+}
+
+.form_button {
+	font-family: Arial, Helvetica, sans-serif;
+	width: 135px;
+	background: #aaa;
+	color: #000;
+	border: none;
+	padding: 0.6em;
+	font-size: 1.4em;
+}
+
+.form_button_container{
+	width: 135px;
+	margin: 0 auto;
+}
+
+.top_middlers {
+
+	margin: 0 0 0 5em;
+	padding: 0.1em;
+}
+
+.Log_Out_button {
+	font-family: Arial, Helvetica, sans-serif;
+	position: absolute;
+	left: 10px;
+	top: 10px;
+	background: #aaa;
+	color: #000;
+	border: none;
+	padding: 0.6em;
+	font-size: 1.4em;
+	float: right;
+	text-decoration: none;
+}
+
+.Main_Menu_button {
+	font-family: Arial, Helvetica, sans-serif;
+	position: absolute;
+	width: 6.5em;
+	right: 10px;
+	top: 10px;
+	background: #aaa;
+	color: #000;
+	border: none;
+	padding: 0.6em;
+	font-size: 1.4em;
+	float: right;
+	text-decoration: none;
+}
+
+.Back_button {
+	font-family: Arial, Helvetica, sans-serif;
+	position: absolute;
+	left: 10px;
+	padding: 0.6em;
+	background: #aaa;
+	color: #000;
+	border: none;
+	font-size: 1.4em;
+}
+
+.Title {
+	width: 12em;
+	margin: 0 auto;
+}
+
+.Image {
+	width: 200px;
+	height: 150px;
+	margin: 0 auto;
+}
+
+.Log_Out_button:hover{background-color: #cba;}
+.Main_Menu_button:hover{background-color: #cba;}
+.Back_button:hover{background-color: #cba;}
+.form_button:hover{background-color: #cba;}
+
+*	{
+	box-sizing: border-box;
+}
+
+
+.column {
+	float: left;
+	width: 50%;
+	padding: 2px;
+}
+
+
+.row:after {
+	content: "";
+	display: table;
+	clear: both;
+}
+
+
+@media screen and (max-width: 300px) {
+	.column {
+		width: 100%;
+	}
+}
+
+#maincontainer{
+	top:0px;
+	padding-top:0;
+	margin:auto; position:relative;
+	width:700px;
+	height:100%;
+}
+
+#Progress_Status {
+	width: 75%;
+	background-color: #ddd;
+}
+
+#order1Progress {
+	width: 0%;
+	height: 35px;
+	background-color: #4CAF50;
+	text-align: center;
+	line-height: 32px;
+	color: black;
+}
+
+#order2Progress {
+	width: 0%;
+	height: 35px;
+	background-color: #4CAF50;
+	text-align: center;
+	line-height: 32px;
+	color: black;
+}
+
+</style>
 </head>
 
 <body>
 	<div id="maincontainer">
-	<a href="Main_Menu.htm"
-	class="Main_Menu_button">Main Menu</a>
-	<a href="index.htm"
-	class="Log_Out_button">LogOut</a>
-	<br />
-	<br />
-	<div class="Title">
-	<h1>Track Order</h1>
-	</div>
-	<fieldset>
-	<div class="row">
+		<a href="Main_Menu.htm"
+		class="Main_Menu_button">Main Menu</a>
+		<a href="index.htm"
+		class="Log_Out_button">LogOut</a>
+		<br />
+		<br />
+		<div class="Title">
+			<h1>Track Order</h1>
+		</div>
+		<fieldset>
+			<div class="row">
 
-	</div>
-	<a style="color:black;font-family: Arial;">Now Tracking:</a>
-	<select id = "dropdown" name = "dropdown" onchange="java_script_:show(this.options[this.selectedIndex].value)">
-						<option value = "0" selected> - Order to Track - </option>
-						<option value = "1">Order 1</option>
-            <option value = "2">Order 2</option>
-         </select>
-	<br />
-	<a style="color:black;font-family: Arial;">Key: </a>
-	<a style="color:black;font-family: Arial;"> Not Started </a>|
-	<a style="color:orange;font-family: Arial;"> In Progress </a>|
-	<a style="color:green;font-family: Arial;"> Finished </a>
-	<div id="Order1" style="display:none" class="row">
-		<div class="column";>
-			<h2 id="transporting1" style="color:black;">Tranporting</h2>
-		</div>
-		<div class="column";>
-			<h2 id="dispatched1" style="color:black;">Dispatched</h2>
-		</div>
-		<div class="column";>
-			<h2 id="process11" style="color:black;">Process 1</h2>
-		</div>
-		<div class="column";>
-			<h2 id="process21" style="color:black;">Process 2</h2>
-		</div>
-		<div class="column";>
-			<h2 id="completed1">Completed:</h2>
-		</div>
-	</div>
+			</div>
+			<a style="color:black;font-family: Arial;">Now Tracking:</a>
+			<select id = "dropdown" name = "dropdown" onchange="java_script_:show(this.options[this.selectedIndex].value)">
+				<option value = "0" selected> - Order to Track - </option>
+				<option value = "1">Order 1</option>
+				<option value = "2">Order 2</option>
+			</select>
+			<br />
 
-	<div id="Order2" style="display:none" class="row">
-		<div class="column";>
-			<h2 id="transporting2" style="color:black;">Tranporting</h2>
-		</div>
-		<div class="column";>
-			<h2 id="dispatched2" style="color:black;">Dispatched</h2>
-		</div>
-		<div class="column";>
-			<h2 id="process12" style="color:black;">Process 1</h2>
-		</div>
-		<div class="column";>
-			<h2 id="process22" style="color:black;">Process 2</h2>
-		</div>
-		<div class="column";>
-			<h2 id="completed2">Completed:</h2>
-		</div>
-	</div>
+			<div id="Order1" style="display:none" class="row">
+				<div id="Progress_Status">
+					<div id="order1Progress"></div>
+				</div>
+				<div>
+					<label id="status1">-</label>
+				</div>
+				<!-- For testing
+				<button onclick="tester([1,0,0,0,0])">Try it</button>
+				<button onclick="tester([1,1,0,0,0])">Try it</button>
+				<button onclick="tester([1,2,0,0,0])">Try it</button>
+				<button onclick="tester([1,2,1,0,0])">Try it</button>
+				<button onclick="tester([1,2,2,0,0])">Try then</button>
+				<button onclick="tester([1,2,2,1,0])">Try then</button>
+				<button onclick="tester([1,2,2,2,0])">Try then</button>
+				<button onclick="tester([1,2,2,2,1])">Try then</button>
+				<button onclick="tester([1,2,2,2,2])">Try then</button>
 
-	<!--
-	<div class="form_button_container">
-	<input type="button" onclick=submit(); value="Order Item" class="form_button" />
+				<button onclick="tester([1,0,0,0,0])">Try it</button>
+				<button onclick="tester([1,1,0,0,0])">Try it</button>
+				<button onclick="tester([1,2,0,0,0])">Try it</button>
+				<button onclick="tester([1,2,1,0,0])">Try it</button>
+				<button onclick="tester([1,2,2,0,0])">Try then</button>
+				<button onclick="tester([1,2,2,0,1])">Try then</button>
+				<button onclick="tester([1,2,2,0,2])">Try then</button>
+				<br />
+				<button onclick="tester([1,0,0,0,0])">Try it</button>
+				<button onclick="tester([1,1,0,0,0])">Try it</button>
+				<button onclick="tester([1,2,0,0,0])">Try it</button>
+				<button onclick="tester([1,2,0,1,0])">Try it</button>
+				<button onclick="tester([1,2,0,2,0])">Try then</button>
+				<button onclick="tester([1,2,0,2,1])">Try then</button>
+				<button onclick="tester([1,2,0,2,2])">Try then</button>
+				<br />
+				<button onclick="tester([1,0,0,0,0])">Try it</button>
+				<button onclick="tester([1,1,0,0,0])">Try it</button>
+				<button onclick="tester([1,2,0,0,0])">Try it</button>
+				<button onclick="tester([1,2,0,0,1])">Try then</button>
+				<button onclick="tester([1,2,0,0,2])">Try then</button>
+			-->
+		</div>
+		<div id="Order2" style="display:none" class="row">
+			<div id="Progress_Status">
+				<div id="order2Progress">-</div>
+			</div>
+			<label id="status2"></label>
+		</div>
+
+
+
+		<!--
+		<a style="color:black;font-family: Arial;">Key: </a>
+		<a style="color:black;font-family: Arial;"> Not Started </a>|
+		<a style="color:orange;font-family: Arial;"> In Progress </a>|
+		<a style="color:green;font-family: Arial;"> Finished </a>
+		<div id="Order1" style="display:none" class="row">
+		<div class="column";>
+		<h2 id="transporting1" style="color:black;">Tranporting</h2>
 	</div>
-	--->
-	<br /><br /><br />
-	</fieldset>
-	<br /><br />
-	<button onclick=goBack(); type=“button” class="Back_button">Back</button>
+	<div class="column";>
+	<h2 id="dispatched1" style="color:black;">Dispatched</h2>
+</div>
+<div class="column";>
+<h2 id="process11" style="color:black;">Process 1</h2>
+</div>
+<div class="column";>
+<h2 id="process21" style="color:black;">Process 2</h2>
+</div>
+<div class="column";>
+<h2 id="completed1">Completed:</h2>
+</div>
+</div>
+
+<div id="Order2" style="display:none" class="row">
+<div class="column";>
+<h2 id="transporting2" style="color:black;">Tranporting</h2>
+</div>
+<div class="column";>
+<h2 id="dispatched2" style="color:black;">Dispatched</h2>
+</div>
+<div class="column";>
+<h2 id="process12" style="color:black;">Process 1</h2>
+</div>
+<div class="column";>
+<h2 id="process22" style="color:black;">Process 2</h2>
+</div>
+<div class="column";>
+<h2 id="completed2">Completed:</h2>
+</div>
+</div>
+-->
+
+<!--
+<div class="form_button_container">
+<input type="button" onclick=submit(); value="Order Item" class="form_button" />
+</div>
+-->
+<br /><br /><br />
+</fieldset>
+<br /><br />
+<button onclick=goBack(); type=“button” class="Back_button">Back</button>
 </div>
 
 </body>
