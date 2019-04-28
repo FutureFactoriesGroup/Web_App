@@ -61,6 +61,34 @@ ros.on('close', function() {
 
 // Subscribing to a Topic
 
+var problemlistener = new ROSLIB.Topic({
+	ros : ros,
+	name : '/system',
+	messageType : 'std_msgs/String'
+});
+
+problemlistener.subscribe(function(message) {
+	var packet = message.data;
+	if (packet.slice(0,1)=="2") { //if the packet is targetted at UI
+		if (packet.slice(4,7)=="054") { //if the command code is the correct one
+			var notcmndData = "2141054001"; //everything before the command data
+			var cmndData = packet.slice(10,11);
+			var thischecksum = packet.slice(11,75); //extract the checksum from the packet
+
+			var checksum = new jsSHA("SHA-256", "TEXT"); //checksum object to validate received data
+			checksum.update(notcmndData + cmndData);
+			var mychecksum = checksum.getHash("HEX");
+
+			if (thischecksum == mychecksum) { //if checksums match
+				if (cmndData == "n") { //if sent "n" (path not found)
+					alert("!ALERT! : Path Not Found for Platform");
+				}
+			}
+		}
+	}
+});
+
+
 var listener = new ROSLIB.Topic({
 	ros : ros,
 	name : '/order_tracker',
