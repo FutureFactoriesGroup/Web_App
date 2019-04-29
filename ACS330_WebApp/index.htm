@@ -14,6 +14,9 @@ function log_in() {
   localStorage.userEmail = userInfo.value;
   //console.log(localStorage.userEmail);
   //alert("Your email: " + userInfo.value);
+  if (document.getElementById('password').value != "Group002") {
+    window.location.href = 'index.htm';
+  }
   //window.location.href = 'Main_Menu.htm';
 }
 
