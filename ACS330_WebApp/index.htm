@@ -14,9 +14,21 @@ function log_in() {
   localStorage.userEmail = userInfo.value;
   //console.log(localStorage.userEmail);
   //alert("Your email: " + userInfo.value);
+
+  var ok = true;
   if (document.getElementById('password').value != "Group002") {
-    window.location.href = 'index.htm';
+      alert("Passwords Do not match");
+      ok = false;
   }
+  else {
+      //alert("Passwords Match!!!");
+  }
+  return ok;
+
+  /* if (document.getElementById('password').value != "Group002") {
+    window.location.href = 'index.htm';
+
+  }*/
   //window.location.href = 'Main_Menu.htm';
 }
 
@@ -111,7 +123,7 @@ height:100%;
 <h1>Log In</h1>
 </div>
 <br />
-<form action="Main_Menu.htm" method="post">
+<form action="Main_Menu.htm" onsubmit="return log_in()" method="post">
     <div class="form__element">
         <label class="form__label" for="email">
             Email
@@ -131,7 +143,9 @@ height:100%;
 
     <!-- <a href="forgotPassword.html">Forgot password?</a> --->
 
-    <input class="form__submit" onclick=log_in(); type="submit" value="Login">
+    <!-- <input class="form__submit" onclick=log_in(); type="submit" value="Login">
+    -->
+    <input class="form__submit" type="submit" value="Login">
 </form>
 </div>
 </body>
