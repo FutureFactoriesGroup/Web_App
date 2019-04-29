@@ -8,6 +8,11 @@
 	function goBack() {
 	  window.history.back();
 	}
+
+	function not_ready(){
+		alert("This page is a placeholder and is awaiting full implementation")
+	}
+
 	</script>
 	<style>
 .form__element {
@@ -145,7 +150,7 @@ height:100%;
 			<input type=checkbox>Stock 5<br />
 
 			<div class="form_button_container">
-			<input type="button" value="Generate Stock List" class="form_button" />
+			<input type="button" value="Generate Stock List" onclick=not_ready(); class="form_button" />
 			</div>
 			<br />
 		</fieldset>
