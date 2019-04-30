@@ -17,7 +17,7 @@ function log_in() {
 
   var ok = true;
   if (document.getElementById('password').value != "Group002") {
-      alert("Passwords Do not match");
+      alert("Password Incorrect!");
       ok = false;
   }
   else {
@@ -138,7 +138,7 @@ height:100%;
             <span class="form__required">required</span>
         </label>
         <input class="form__input" id="password" type="password" name="password" required minlength="8" aria-describedby="passwordHint" autocomplete="current-password">
-        
+
     </div>
 
     <!-- <a href="forgotPassword.html">Forgot password?</a> --->
